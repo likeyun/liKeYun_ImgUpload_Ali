@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>在线图床</title>
+  <meta charset="utf-8">
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+</head>
+<body>
+<div class="card-body">
+<form id="form" enctype="multipart/form-data">
+  <div id="select_file">
+    <div class="imgselect_btn">
+      本地上传
+      <input type="file" id="imgselect" name="file"/>
+    </div>
+  </div>
+</form>
+</div>
+<br/>
+<div id="previewimg"></div>
+<h2 id="imgurl"></h2>
+<script type="text/javascript">
+//监听[input=file]是否已经选择文件
+$("#imgselect").bind('input propertychange',function(e){
+  //如果已经选择，就执行上传图片函数
+  imgupload();
+})
+
+function imgupload(){
+  //获取表单数据
+  var form = new FormData(document.getElementById("form"));
+  $.ajax({
+    url:'ali.php',
+    type:"post",
+    data:form,
+    cache: false,
+    processData: false,
+    contentType: false,
+    success:function(data){
+      if (data.code == 200) {
+        $('#previewimg').html('<img src="'+data.path+'" style="width:300px;" />');
+        $('#imgurl').html(data.path)
+      }else{
+        $('#imgurl').html(data.msg)  
+      }
+      
+    },
+    error:function(data){
+      alert("上传失败");
+    }
+  })
+}
+</script>
+</body>
+</html>
